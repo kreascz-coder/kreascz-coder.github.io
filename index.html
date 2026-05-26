@@ -21,6 +21,8 @@ header{background:var(--ink);color:var(--paper);padding:14px 20px;display:flex;a
 .brand{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:300;letter-spacing:0.12em;color:var(--gold-light)}
 .header-right{text-align:right;flex-shrink:0}
 .date-display{font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#aaa;margin-bottom:6px}
+.share-btn{background:transparent;color:var(--gold-light);border:1px solid var(--gold);width:34px;height:34px;border-radius:3px;font-size:1rem;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0}
+.share-btn:hover{background:var(--gold)}
 .cart-btn{background:var(--gold);color:white;border:none;padding:7px 14px;border-radius:3px;font-family:'DM Sans',sans-serif;font-size:0.8rem;letter-spacing:0.08em;cursor:pointer;transition:background 0.2s;display:inline-flex;align-items:center;gap:6px}
 .install-btn{background:transparent;color:var(--gold-light);border:1px solid var(--gold);padding:7px 14px;border-radius:3px;font-family:'DM Sans',sans-serif;font-size:0.8rem;letter-spacing:0.08em;cursor:pointer;transition:all 0.2s;display:none;align-items:center;gap:6px;margin-bottom:6px}
 .install-btn:hover{background:var(--gold);color:white}
@@ -105,7 +107,10 @@ header{background:var(--ink);color:var(--paper);padding:14px 20px;display:flex;a
   </div>
   <div class="header-right">
     <div class="date-display" id="date-display">—</div>
-    <button class="cart-btn" onclick="openCart()">🛒 Ver pedido <span class="cart-count" id="cart-count">0</span></button>
+    <div style="display:flex;gap:6px;justify-content:flex-end;align-items:center">
+      <button class="share-btn" onclick="shareApp()" title="Compartir catálogo">🔗</button>
+      <button class="cart-btn" onclick="openCart()">🛒 Ver pedido <span class="cart-count" id="cart-count">0</span></button>
+    </div>
   </div>
 </header>
 <div class="instructions">✦ Selecciona los modelos que deseas · Elige la cantidad · Envía tu pedido</div>
@@ -338,7 +343,22 @@ async function submitOrder(){
   }catch(err){alert('Error al enviar. Intenta de nuevo.');}
   btn.disabled=false;btn.textContent='Enviar pedido →';
 }
-function resetAll(){
+function shareApp(){
+  const data={
+    title:'JR Catálogo',
+    text:'¡Mira el catálogo de JR! Puedes hacer tu pedido directo desde aquí 🛍️',
+    url:'https://kreascz-coder.github.io'
+  };
+  if(navigator.share){
+    navigator.share(data).catch(()=>{});
+  } else {
+    navigator.clipboard.writeText(data.url).then(()=>{
+      alert('¡Link copiado! Compártelo con tus clientes.');
+    }).catch(()=>{
+      alert('Link: https://kreascz-coder.github.io');
+    });
+  }
+}
   cart={};
   document.querySelectorAll('.item-card').forEach(c=>c.classList.remove('selected'));
   document.querySelectorAll('.qty-input').forEach(s=>{s.value=1;});
