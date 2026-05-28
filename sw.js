@@ -1,4 +1,4 @@
-const CACHE_NAME = "jr-catalogo-v1";
+const CACHE_NAME = "jr-catalogo-v2";
 const urlsToCache = [
   "/",
   "/index.html",
@@ -24,6 +24,16 @@ self.addEventListener("activate", event => {
 });
 
 self.addEventListener("fetch", event => {
+  const url = event.request.url;
+  
+  // Never intercept GitHub API or raw content calls
+  if (url.includes('api.github.com') || 
+      url.includes('raw.githubusercontent.com') ||
+      url.includes('script.google.com') ||
+      url.includes('fonts.googleapis.com')) {
+    return;
+  }
+  
   event.respondWith(
     caches.match(event.request).then(response => {
       return response || fetch(event.request);
